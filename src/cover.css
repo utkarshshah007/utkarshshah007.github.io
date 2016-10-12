@@ -96,13 +96,13 @@ body {
   border-bottom-color: #fff;
 }
 
-@media (min-width: 768px) {
+/*@media (min-width: 768px) {
   .masthead-brand {
     float: left;
   }
   .masthead-nav {
     float: right;
-  }
+  }*/
 }
 
 
@@ -135,14 +135,14 @@ body {
 
 @media (min-width: 768px) {
   /* Pull out the header and footer */
-  .masthead {
+  /*.masthead {
     position: fixed;
     top: 0;
   }
   .mastfoot {
     position: fixed;
     bottom: 0;
-  }
+  }*/
   /* Start the vertical centering */
   .site-wrapper-inner {
     vertical-align: middle;
