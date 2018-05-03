@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<meta name="description" content="Utkarsh Shah: Software Developer, Entrepreneur">
+<meta name="keywords" content="Utkarsh,Shah,Karsh,UPenn,Penn,entrepreneur,developer,computer science">
+
+<base href="http://utkarshshah.com/">
+
+<title>Utkarsh Shah</title>
+
+<meta name="generator" content="Hugo 0.40.2" />
+
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400|Roboto+Slab:400,700|Roboto:300,300i,400,400i,500,500i,700,700i">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="http://utkarshshah.com/css/main.css">
+
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="theme-color" content="#ffffff">
+
+</head>
+<body lang="en-US">
+<div class="container">
+
+
+<header class="row text-left title">
+  <h1 class="title">Exploring Relationship Queries with Django</h1>
+</header>
+<section id="category-pane" class="row meta">
+  
+  <div class="col-md-12">
+    <h6 class="text-left meta">
+      PUBLISHED ON MAY 2, 2018 
+      
+      
+      — 
+      
+      
+      <a class="meta" href="/categories/blog">BLOG</a>
+      
+      
+    </h6>
+  </div>
+  
+</section>
+<section id="content-pane" class="row">
+  <div class="col-md-12 text-justify content">
+    
+
+<p>When creating a Django application, almost all valuable data models take advantage of relations. Often, as projects grow, we often need to make complex queries on relationships. To illustrate this, let&rsquo;s use two basic models as examples: <code>Tour</code> and <code>Concert</code>.</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#069;font-weight:bold">class</span> <span style="color:#0a8;font-weight:bold">Tour</span>(models<span style="color:#555">.</span>Model):
+    name <span style="color:#555">=</span> models<span style="color:#555">.</span>CharField(max_length<span style="color:#555">=</span><span style="color:#f60">200</span>)
+
+
+<span style="color:#069;font-weight:bold">class</span> <span style="color:#0a8;font-weight:bold">Concert</span>(models<span style="color:#555">.</span>Model):
+	name <span style="color:#555">=</span> <span style="color:#555">=</span> models<span style="color:#555">.</span>CharField(max_length<span style="color:#555">=</span><span style="color:#f60">200</span>)
+    tour <span style="color:#555">=</span> models<span style="color:#555">.</span>ForeignKey(Tour, on_delete<span style="color:#555">=</span>models<span style="color:#555">.</span>CASCADE)
+    start <span style="color:#555">=</span> models<span style="color:#555">.</span>DateTimeField()
+    tix_available <span style="color:#555">=</span> models<span style="color:#555">.</span>BooleanField()</code></pre></div>
+<p>This sets up a one-to-many relationship from <code>Tour</code> to <code>Concert</code> and adds some useful information to each <code>Concert</code> - when the show happens and how many tickets are still available.</p>
+
+<h3 id="simple-queries">Simple Queries</h3>
+
+<p>While the extra information in <code>Concert</code> isn&rsquo;t a property of a <code>Tour</code> object, one can easily imagine a <code>TourDetailView</code> which needs to include information abut the next concert in the series and how many tickets are available for it.</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#069;font-weight:bold">class</span> <span style="color:#0a8;font-weight:bold">TourDetailView</span>(generic<span style="color:#555">.</span>DetailView):
+
+    model <span style="color:#555">=</span> Tour
+
+    <span style="color:#069;font-weight:bold">def</span> <span style="color:#c0f">get_context_data</span>(self, <span style="color:#555">**</span>kwargs):
+        context <span style="color:#555">=</span> <span style="color:#366">super</span>()<span style="color:#555">.</span>get_context_data(<span style="color:#555">**</span>kwargs)
+
+        <span style="color:#09f;font-style:italic"># Add in info on the next concert</span>
+        now <span style="color:#555">=</span> datetime<span style="color:#555">.</span>now()
+        <span style="color:#366">next</span> <span style="color:#555">=</span> self<span style="color:#555">.</span><span style="color:#366">object</span><span style="color:#555">.</span>concert_set<span style="color:#555">.</span><span style="color:#366">filter</span>(start__gt<span style="color:#555">=</span>now)<span style="color:#555">.</span>earliest(<span style="color:#c30">&#34;start&#34;</span>)
+        context[<span style="color:#c30">&#39;next_concert&#39;</span>] <span style="color:#555">=</span> <span style="color:#366">next</span>
+        <span style="color:#069;font-weight:bold">return</span> context</code></pre></div>
+<p>While this works just fine, it creates a one-time context object in the <code>View</code> that can&rsquo;t be reused elsewhere. Since this is information we&rsquo;d want every time we use the <code>Tour</code> model, it would be much better if the logic for this lived in the model itself.</p>
+
+<p>So how can we add a field that represents related &lsquo;Concert&rsquo; data onto the &lsquo;Tour&rsquo; without duplicating data in our database?</p>
+
+<h3 id="expanding-the-model">Expanding the Model</h3>
+
+<p>The first, simplest answer is to create a <code>@property</code> method:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#069;font-weight:bold">class</span> <span style="color:#0a8;font-weight:bold">Tour</span>(models<span style="color:#555">.</span>Model):
+    name <span style="color:#555">=</span> models<span style="color:#555">.</span>CharField(max_length<span style="color:#555">=</span><span style="color:#f60">200</span>)
+
+    <span style="color:#99f">@property</span>
+    <span style="color:#069;font-weight:bold">def</span> <span style="color:#c0f">next_concert</span>(self):
+    	now <span style="color:#555">=</span> datetime<span style="color:#555">.</span>now()
+        <span style="color:#069;font-weight:bold">return</span> self<span style="color:#555">.</span>concert_set<span style="color:#555">.</span><span style="color:#366">filter</span>(start__gt<span style="color:#555">=</span>now)<span style="color:#555">.</span>earliest(<span style="color:#c30">&#34;start&#34;</span>)</code></pre></div>
+<p>This is allows us to easily get the information we want out of our <code>Tour</code> object:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#555">&gt;&gt;&gt;</span> t <span style="color:#555">=</span> Tour<span style="color:#555">.</span>objects<span style="color:#555">.</span>get(<span style="color:#366">id</span><span style="color:#555">=</span><span style="color:#f60">1</span>)
+<span style="color:#555">&gt;&gt;&gt;</span> t
+<span style="color:#555">&lt;</span>Tour: <span style="color:#c30">&#39;Voodoo Lounge Tour&#39;</span><span style="color:#555">&gt;</span>
+<span style="color:#555">&gt;&gt;&gt;</span> t<span style="color:#555">.</span>next_concert
+<span style="color:#555">&lt;</span>Concert: {<span style="color:#c30">&#39;name&#39;</span>: <span style="color:#c30">&#39;Buenos Aires&#39;</span>, <span style="color:#c30">&#39;tour&#39;</span>: <span style="color:#f60">1</span>, <span style="color:#c30">&#39;start&#39;</span>: <span style="color:#c30">&#39;1995-02-09&#39;</span>, <span style="color:#c30">&#39;tix_available&#39;</span>: True}<span style="color:#555">&gt;</span></code></pre></div>
+<p>Seems simple enough!</p>
+
+<p>But what happens when we want to make a <code>TourListView</code>?</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#555">&gt;&gt;&gt;</span> tours <span style="color:#555">=</span> Tour<span style="color:#555">.</span>objects<span style="color:#555">.</span><span style="color:#366">all</span>()
+<span style="color:#555">&gt;&gt;&gt;</span> tours<span style="color:#555">.</span>order_by(<span style="color:#c30">&#39;-next_concert__start&#39;</span>)
+Traceback (most recent call last):
+  <span style="color:#555">...</span>
+django<span style="color:#555">.</span>core<span style="color:#555">.</span>exceptions<span style="color:#555">.</span>FieldError: Cannot resolve keyword <span style="color:#c30">&#39;next_concert&#39;</span> into field<span style="color:#555">.</span>
+<span style="color:#555">&gt;&gt;&gt;</span> </code></pre></div>
+<p>Since <code>next_concert</code> isn&rsquo;t a model field, we can&rsquo;t use it in our <code>QuerySet</code> - that&rsquo;s because <code>QuerySet</code> accesses the underlying database directly - it doesn&rsquo;t know anything about our <code>@property</code> method.</p>
+
+<p>We could simply pull each <code>Tour</code> object out in a <code>list()</code>, but that could mean a lot of unneccessary queries.</p>
+
+<h3 id="taking-advantage-of-annotate">Taking advantage of <code>Annotate</code></h3>
+
+<p>So how can we query this critical information in an efficient way? After we dig through Django&rsquo;s documentation and discover the <code>annotate</code> method, we can solve this too!</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#555">&gt;&gt;&gt;</span> <span style="color:#069;font-weight:bold">from</span> <span style="color:#0cf;font-weight:bold">django.db.models</span> <span style="color:#069;font-weight:bold">import</span> Min
+<span style="color:#555">&gt;&gt;&gt;</span> tours <span style="color:#555">=</span> Tour<span style="color:#555">.</span>objects<span style="color:#555">.</span>annotate(
+		next_concert_start<span style="color:#555">=</span>Min(
+				<span style="color:#c30">&#39;concert_set__start&#39;</span>, 
+				<span style="color:#366">filter</span><span style="color:#555">=</span>Q(concert_set__start__gt<span style="color:#555">=</span>now)
+			)
+	)
+<span style="color:#555">&gt;&gt;&gt;</span> tours<span style="color:#555">.</span>values(<span style="color:#c30">&#39;next_concert_start&#39;</span>)<span style="color:#555">.</span>first()
+{<span style="color:#c30">&#39;next_concert_start&#39;</span>: datetime<span style="color:#555">.</span>datetime(<span style="color:#f60">1995</span>, <span style="color:#f60">2</span>, <span style="color:#f60">9</span>, <span style="color:#f60">18</span>, <span style="color:#f60">9</span>, <span style="color:#f60">40</span>, tzinfo<span style="color:#555">=&lt;</span>UTC<span style="color:#555">&gt;</span>)}</code></pre></div>
+<p>The annotate method allows us to attach an aggregate value to each of our <code>Tour</code> objects. This lets us use a single query to gather the data we need efficently.</p>
+
+<p><em>&ldquo;But wait!&rdquo; you say, &ldquo;that&rsquo;s just the date! Don&rsquo;t we need to know if tickets are even available? How can we get access to the relevant Concert object itself?&rdquo;</em></p>
+
+<h3 id="taking-advantage-of-subquery">Taking advantage of <code>Subquery</code></h3>
+
+<p>That&rsquo;s a good point! Unfortunately, <code>annotate</code> won&rsquo;t be enough to help us there. <code>tix_available</code> for the next concert isn&rsquo;t something we can surface with an aggregation. Instead, we&rsquo;ll use <code>Subquery</code> for this.</p>
+
+<p>Let&rsquo;s see if our <code>TourListView</code> can tell us how many tours have sold out their upcoming concerts.</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#069;font-weight:bold">from</span> <span style="color:#0cf;font-weight:bold">django.db.models</span> <span style="color:#069;font-weight:bold">import</span> OuterRef, Subquery
+
+<span style="color:#069;font-weight:bold">class</span> <span style="color:#0a8;font-weight:bold">TourListView</span>(generic<span style="color:#555">.</span>ListView):
+
+    model <span style="color:#555">=</span> Tour
+
+    <span style="color:#069;font-weight:bold">def</span> <span style="color:#c0f">get_context_data</span>(self, <span style="color:#555">**</span>kwargs):
+        context <span style="color:#555">=</span> <span style="color:#366">super</span>()<span style="color:#555">.</span>get_context_data(<span style="color:#555">**</span>kwargs)
+
+        tours <span style="color:#555">=</span> Tour<span style="color:#555">.</span>objects<span style="color:#555">.</span><span style="color:#366">all</span>()
+
+        <span style="color:#09f;font-style:italic"># Use subquery to get ticket availability info</span>
+        now <span style="color:#555">=</span> datetime<span style="color:#555">.</span>now()
+        concerts <span style="color:#555">=</span> Concert<span style="color:#555">.</span>objects<span style="color:#555">.</span><span style="color:#366">filter</span>(tour<span style="color:#555">=</span>OuterRef(<span style="color:#c30">&#39;pk&#39;</span>))
+        upcoming <span style="color:#555">=</span> concerts<span style="color:#555">.</span><span style="color:#366">filter</span>(start__gt<span style="color:#555">=</span>now)<span style="color:#555">.</span>order_by(<span style="color:#c30">&#39;-start&#39;</span>)
+        tours <span style="color:#555">=</span> tours<span style="color:#555">.</span>annotate(
+        	tix_status<span style="color:#555">=</span>Subquery(upcoming<span style="color:#555">.</span>values(<span style="color:#c30">&#39;tix_available&#39;</span>)[:<span style="color:#f60">1</span>])
+        )
+
+        context[<span style="color:#c30">&#39;sold_out&#39;</span>] <span style="color:#555">=</span> tours<span style="color:#555">.</span><span style="color:#366">filter</span>(tix_status<span style="color:#555">=</span>False)<span style="color:#555">.</span>count()
+
+        <span style="color:#069;font-weight:bold">return</span> context</code></pre></div>
+<p><code>Subquery</code> allows us to nest queries so that we can ask these more complex questions. This feature allow us to convert what would normally have been several executions and database calls into a single query.</p>
+
+  </div>
+</section>
+<section id="tag-pane" class="row meta">
+  
+  <div class="col-md-12">
+    <h6 class="text-right meta">
+      
+      
+      TAGS: 
+      
+      
+      <a class="meta" href="/tags/django">DJANGO</a>, 
+      
+      <a class="meta" href="/tags/programming">PROGRAMMING</a>, 
+      
+      <a class="meta" href="/tags/python">PYTHON</a>
+      
+      
+    </h6>
+  </div>
+  
+</section>
+
+
+
+
+
+
+
+
+<section id="menu-pane" class="row menu text-center">
+  
+  
+  <span><a class="menu-item" href="http://utkarshshah.com/blog/first/">&lt; prev | </a></span>
+  
+  
+  <span><a class="menu-item" href="/blog">blog</a></span>
+  
+  
+  
+  <h4 class="text-center"><a class="menu-item" href="http://utkarshshah.com/">home</a></h4>
+</section>
+
+
+
+<footer class="row text-center footer">
+  <hr />
+  
+  <h6 class="text-center copyright">© 2017-2018. Utkarsh Shah. <a href="http://creativecommons.org/licenses/by/3.0/">Some Rights Reserved</a>.</h6>
+  
+  <h6 class="text-center powered">Powered by <a href="https://gohugo.io/">Hugo</a> &amp; <a href="https://github.com/shenoybr/hugo-goa">Goa</a>.</h6>
+  
+  
+</footer>
+
+</div>
+
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
+
+
