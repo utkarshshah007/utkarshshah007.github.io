@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Utkarsh Shah</title>
+    <link>http://utkarshshah.com/tags/</link>
+    <description>Recent content in Tags on Utkarsh Shah</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Sun, 02 Oct 2016 22:55:05 -0400</lastBuildDate>
+    
+	<atom:link href="http://utkarshshah.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>About</title>
+      <link>http://utkarshshah.com/tags/about/</link>
+      <pubDate>Sun, 02 Oct 2016 22:55:05 -0400</pubDate>
+      
+      <guid>http://utkarshshah.com/tags/about/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Django</title>
+      <link>http://utkarshshah.com/tags/django/</link>
+      <pubDate>Wed, 02 May 2018 00:00:00 -0400</pubDate>
+      
+      <guid>http://utkarshshah.com/tags/django/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Intro</title>
+      <link>http://utkarshshah.com/tags/intro/</link>
+      <pubDate>Wed, 02 Aug 2017 00:00:00 -0400</pubDate>
+      
+      <guid>http://utkarshshah.com/tags/intro/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Programming</title>
+      <link>http://utkarshshah.com/tags/programming/</link>
+      <pubDate>Wed, 02 May 2018 00:00:00 -0400</pubDate>
+      
+      <guid>http://utkarshshah.com/tags/programming/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Python</title>
+      <link>http://utkarshshah.com/tags/python/</link>
+      <pubDate>Wed, 02 May 2018 00:00:00 -0400</pubDate>
+      
+      <guid>http://utkarshshah.com/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Temp</title>
+      <link>http://utkarshshah.com/tags/temp/</link>
+      <pubDate>Wed, 02 Aug 2017 00:00:00 -0400</pubDate>
+      
+      <guid>http://utkarshshah.com/tags/temp/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

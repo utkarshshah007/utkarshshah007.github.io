@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Intro on Utkarsh Shah</title>
+    <link>http://utkarshshah.com/tags/intro/</link>
+    <description>Recent content in Intro on Utkarsh Shah</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Wed, 02 Aug 2017 00:00:00 -0400</lastBuildDate>
+    
+	<atom:link href="http://utkarshshah.com/tags/intro/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>A First Post</title>
+      <link>http://utkarshshah.com/blog/first/</link>
+      <pubDate>Wed, 02 Aug 2017 00:00:00 -0400</pubDate>
+      
+      <guid>http://utkarshshah.com/blog/first/</guid>
+      <description>Sorry to disappoint! Nothing here about how to make your very own copy of this blog (no cat pictures either!).
+Maybe one day, you will come here and find something. But not today.
+I should just cover this blog with memes.</description>
+    </item>
+    
+  </channel>
+</rss>
