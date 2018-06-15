@@ -255,3 +255,9 @@ header.title
         margin-top: 30px;
     }
 }
+
+pre > code {
+    white-space: inherit;
+    word-wrap: initial;
+    word-break: initial;
+}
